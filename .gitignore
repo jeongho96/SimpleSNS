@@ -286,3 +286,8 @@ gradle-app.setting
 *.yaml
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij+all,intellij+iml,intellij,java,gradle
+
+# fe 코드도 제거 필요
+
+**/front-end/node_modules/**
+**/front-end/static/**
