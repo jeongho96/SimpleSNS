@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 
 // 임시로 DB 자동 연결 막아두기
-@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
+@SpringBootApplication
 public class SimpleSnsApplication {
 
     public static void main(String[] args) {

@@ -1,2 +1,30 @@
 server:
   port: 8085
+
+
+spring:
+  jpa:
+    database: postgresql
+    hibernate:
+      dialect: org.hibernate.dialect.PostgresSQLDialect
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
+
+  datasource:
+    hikari:
+      maximum-pool-size: 4
+    url: jdbc:postgresql://localhost:5432/simple_sns
+    username: jeongho
+    password: jeongho1234
+#    platform: postgres heroku 사용시 의미.
+    driver-class-name: org.postgresql.Driver
+
+
+jwt:
+  secret-key : fc.simple-sns-application-2025.secret_key
+  # 30 days
+  token.expired-time-ms: 2592000000

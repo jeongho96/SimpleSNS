@@ -5,6 +5,7 @@ package kr.co.simplesns.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.simplesns.controller.request.UserJoinRequest;
 import kr.co.simplesns.controller.request.UserLoginRequest;
+import kr.co.simplesns.exception.ErrorCode;
 import kr.co.simplesns.exception.SnsApplicationException;
 import kr.co.simplesns.model.User;
 import kr.co.simplesns.service.UserService;
@@ -59,7 +60,10 @@ public class UserControllerTest {
         String password = "password";
 
 
-        when(userService.join(userName, password)).thenThrow(new SnsApplicationException());
+        when(userService.join(userName, password)).thenThrow(new SnsApplicationException(
+                ErrorCode.DUPLICATED_USER_NAME,
+                ""
+        ));
 
         mockMvc.perform(post("/api/v1/users/join")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -89,7 +93,9 @@ public class UserControllerTest {
         String userName = "userName";
         String password = "password";
 
-        when(userService.login(userName, password)).thenThrow(new SnsApplicationException());
+        when(userService.login(userName, password)).thenThrow(new SnsApplicationException(
+                ErrorCode.USER_NOT_FOUND
+        ));
 
 
         mockMvc.perform(post("/api/v1/users/login")
@@ -104,7 +110,9 @@ public class UserControllerTest {
         String userName = "userName";
         String password = "password";
 
-        when(userService.login(userName, password)).thenThrow(new SnsApplicationException());
+        when(userService.login(userName, password)).thenThrow(new SnsApplicationException(
+                ErrorCode.INVALID_PASSWORD
+        ));
 
 
         mockMvc.perform(post("/api/v1/users/login")

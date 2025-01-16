@@ -26,14 +26,21 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-//    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
+
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-//    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+
 }
 
 tasks.named('test') {
@@ -64,9 +71,10 @@ task cleanFrontEnd(type: Delete){
 }
 
 
-// 체인 형태로 서로 엮어둠
-npmBuild.dependsOn npmInstall
-copyFrontEnd.dependsOn npmBuild
-compileJava.dependsOn copyFrontEnd
-
-clean.dependsOn cleanFrontEnd
+// 체인 형태로 서로 엮어둠.
+// 프론트코드를 띄우면 시간이 오래걸리기 때문에 잠시 중지.
+//npmBuild.dependsOn npmInstall
+//copyFrontEnd.dependsOn npmBuild
+//compileJava.dependsOn copyFrontEnd
+//
+//clean.dependsOn cleanFrontEnd
