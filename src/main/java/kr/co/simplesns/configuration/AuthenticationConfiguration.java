@@ -1,5 +1,7 @@
 package kr.co.simplesns.configuration;
 
+import kr.co.simplesns.configuration.filter.JwtTokenFilter;
+import kr.co.simplesns.exception.CustomAuthenticationEntryPoint;
 import kr.co.simplesns.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
@@ -20,8 +23,8 @@ public class AuthenticationConfiguration {
 
     private final UserService userService;
 
-//    @Value("${jwt.secret-key}")
-//    private String secretKey;
+    @Value("${jwt.secret-key}")
+    private String key;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -35,11 +38,12 @@ public class AuthenticationConfiguration {
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                );
-//                .exceptionHandling(exception -> exception
-//                        .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
-//                )
-//                .addFilterBefore(new JwtTokenFilter(userService, secretKey), UsernamePasswordAuthenticationFilter.class);
+                )
+                // UsernamePasswordAuthenticationFilter 접근 이전에 JwtTokenFilter 사용
+                .addFilterBefore(new JwtTokenFilter(key, userService), UsernamePasswordAuthenticationFilter.class)
+                // Jwt 토큰 관련 에러가 발생했을 때 지정한대로 에러를 처리하기 위해.
+                .exceptionHandling(exception -> exception
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
 
         return http.build();
     }
