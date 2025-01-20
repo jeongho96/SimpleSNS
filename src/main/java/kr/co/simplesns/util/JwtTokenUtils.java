@@ -12,7 +12,7 @@ public class JwtTokenUtils {
 
 
     public static String getUserName(String token, String key) {
-        return extractClaims(token, key).get("username", String.class);
+        return extractClaims(token, key).get("userName", String.class);
     }
 
     public static boolean isExpired(String token, String key) {
@@ -21,8 +21,11 @@ public class JwtTokenUtils {
     }
 
     private static Claims extractClaims(String token, String key) {
-        return Jwts.parser().setSigningKey(getKey(key))
-                .build().parseClaimsJws(token).getBody();
+        return Jwts.parser()
+                .setSigningKey(getKey(key)) // 서명 키 설정
+                .build()
+                .parseClaimsJws(token) // JWT 토큰 파싱
+                .getBody();
     }
 
     public static String generateToken(String userName, String key, long expiredTimeMs) {

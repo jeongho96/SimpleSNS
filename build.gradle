@@ -73,8 +73,8 @@ task cleanFrontEnd(type: Delete){
 
 // 체인 형태로 서로 엮어둠.
 // 프론트코드를 띄우면 시간이 오래걸리기 때문에 잠시 중지.
-//npmBuild.dependsOn npmInstall
-//copyFrontEnd.dependsOn npmBuild
-//compileJava.dependsOn copyFrontEnd
-//
-//clean.dependsOn cleanFrontEnd
+npmBuild.dependsOn npmInstall
+copyFrontEnd.dependsOn npmBuild
+compileJava.dependsOn copyFrontEnd
+
+clean.dependsOn cleanFrontEnd
