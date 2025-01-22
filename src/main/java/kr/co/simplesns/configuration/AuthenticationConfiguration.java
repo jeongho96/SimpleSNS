@@ -11,10 +11,12 @@ import org.springframework.context.annotation.Configuration;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
 
 @Configuration
@@ -34,6 +36,7 @@ public class AuthenticationConfiguration {
                         .requestMatchers("/api/*/users/join", "/api/*/users/login").permitAll()
                         .requestMatchers("/api/*/users/alarm/subscribe/*").permitAll()
                         .requestMatchers("/api/**").authenticated()
+                        .requestMatchers(new RegexRequestMatcher("^(?!/api/).*", null)).permitAll()
                         .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session
@@ -44,8 +47,16 @@ public class AuthenticationConfiguration {
                 // Jwt 토큰 관련 에러가 발생했을 때 지정한대로 에러를 처리하기 위해.
                 .exceptionHandling(exception -> exception
                 .authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
+                // "/api/"로 시작하지 않는 요청을 제외
+
+
 
         return http.build();
     }
 
+
+
+
+
 }
+
