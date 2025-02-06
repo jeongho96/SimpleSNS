@@ -3,16 +3,17 @@ package kr.co.simplesns.controller;
 
 import kr.co.simplesns.controller.request.UserJoinRequest;
 import kr.co.simplesns.controller.request.UserLoginRequest;
+import kr.co.simplesns.controller.response.AlarmResponse;
 import kr.co.simplesns.controller.response.Response;
 import kr.co.simplesns.controller.response.UserJoinResponse;
 import kr.co.simplesns.controller.response.UserLoginResponse;
 import kr.co.simplesns.model.User;
 import kr.co.simplesns.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -32,5 +33,10 @@ public class UserController {
     public Response<UserLoginResponse> login(@RequestBody UserLoginRequest request) {
         String token = userService.login(request.getName(), request.getPassword());
         return Response.success(new UserLoginResponse(token));
+    }
+
+    @GetMapping("/alarm")
+    public Response<Page<AlarmResponse>> alarm(Pageable pageable, Authentication authentication){
+        return Response.success(userService.alarmList(authentication.getName(), pageable).map(AlarmResponse::fromAlarm));
     }
 }

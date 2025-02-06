@@ -2,16 +2,12 @@ package kr.co.simplesns.service;
 
 import kr.co.simplesns.exception.ErrorCode;
 import kr.co.simplesns.exception.SnsApplicationException;
+import kr.co.simplesns.model.AlarmArgs;
+import kr.co.simplesns.model.AlarmType;
 import kr.co.simplesns.model.Comment;
 import kr.co.simplesns.model.Post;
-import kr.co.simplesns.model.entity.CommentEntity;
-import kr.co.simplesns.model.entity.LikeEntity;
-import kr.co.simplesns.model.entity.PostEntity;
-import kr.co.simplesns.model.entity.UserEntity;
-import kr.co.simplesns.repository.CommentEntityRepository;
-import kr.co.simplesns.repository.LikeEntityRepository;
-import kr.co.simplesns.repository.PostEntityRepository;
-import kr.co.simplesns.repository.UserEntityRepository;
+import kr.co.simplesns.model.entity.*;
+import kr.co.simplesns.repository.*;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -30,6 +26,7 @@ public class PostService {
     private final UserEntityRepository userEntityRepository;
     private final LikeEntityRepository likeEntityRepository;
     private final CommentEntityRepository commentEntityRepository;
+    private final AlarmEntityRepository alarmEntityRepository;
 
     public List<Post> findAll() {
         List<PostEntity> postEntities = postEntityRepository.findAll();
@@ -117,6 +114,8 @@ public class PostService {
         });
 
         likeEntityRepository.save(LikeEntity.of(postEntity, userEntity));
+
+        alarmEntityRepository.save(AlarmEntity.of(postEntity.getUser(), AlarmType.NEW_LIKE_ON_POST, new AlarmArgs(userEntity.getId(), postEntity.getId())));
     }
 
 
@@ -125,6 +124,8 @@ public class PostService {
         PostEntity postEntity = getPostEntityOrException(postId);
         // count like
         return likeEntityRepository.countByPost(postEntity);
+
+
 
     }
 
@@ -135,9 +136,7 @@ public class PostService {
 
         commentEntityRepository.save(CommentEntity.of(comment, postEntity, userEntity));
 
-        // create alarm
-        // notificationService.send(AlarmType.NEW_COMMENT_ON_POST, new AlarmArgs(userEntity.getId(), postId), postEntity.getUser());
-//        alarmProducer.send(new AlarmEvent(AlarmType.NEW_COMMENT_ON_POST, new AlarmArgs(userEntity.getId(), postId), postEntity.getUser().getId()));
+        alarmEntityRepository.save(AlarmEntity.of(postEntity.getUser(), AlarmType.NEW_COMMENT_ON_POST, new AlarmArgs(userEntity.getId(), postEntity.getId())));
     }
 
     public Page<Comment> getComments(Integer postId, Pageable pageable) {
